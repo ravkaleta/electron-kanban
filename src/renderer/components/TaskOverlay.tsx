@@ -1,4 +1,3 @@
-import React from 'react'
 import { Task } from '../../shared/types'
 
 interface Props {

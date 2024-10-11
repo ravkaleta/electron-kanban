@@ -1,4 +1,3 @@
-import React from 'react'
 import { readyColors } from '../../shared/constants'
 
 interface Props {

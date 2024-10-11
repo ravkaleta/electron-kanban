@@ -21,7 +21,7 @@
           "completed": false
         }
       ],
-      "color": "#5589ff"
+      "color": "#3b7edb"
     },
     "21749336-1ce2-44ba-b199-7a423edc1de8": {
       "name": "New Section",
@@ -67,8 +67,8 @@
     }
   },
   "sectionOrder": [
-    "6901eaad-3d7f-4470-a1bb-668eb3357f1f",
     "78af9a64-7295-4470-8f07-b6c1d152b49a",
+    "6901eaad-3d7f-4470-a1bb-668eb3357f1f",
     "21749336-1ce2-44ba-b199-7a423edc1de8"
   ]
 }

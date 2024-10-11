@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import ColorPalette from './ColorPalette'
 import ColorPicker from './ColorPicker/ColorPicker'
 import { useProjectStore } from '../store/projectStore'

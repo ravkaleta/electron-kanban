@@ -1,10 +1,8 @@
-import { Reorder } from 'framer-motion'
 import { useProjectStore } from '../store/projectStore'
 import NewTaskForm from './NewTaskForm'
 import Task from './Task'
-import { DndContext } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 
 interface Props {
   sectionId: string
