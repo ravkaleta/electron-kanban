@@ -3,6 +3,7 @@ export interface Project {
   name: string
   sections: Record<string, Section>
   sectionOrder: string[]
+  color: string
 }
 
 export interface Section {
@@ -13,6 +14,8 @@ export interface Section {
 
 export interface Task {
   id: string
-  content: string
+  title: string
+  description?: string
   completed: boolean
+  inProgress: boolean
 }

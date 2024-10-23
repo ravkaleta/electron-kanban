@@ -15,6 +15,10 @@ const ColorPalette = ({ handleColorChange }: Props) => {
           className='w-6 h-6'
         />
       ))}
+      <button
+        className='w-6 h-6 bg-neutral-600'
+        onClick={() => handleColorChange('#525252')}
+      />
     </div>
   )
 }

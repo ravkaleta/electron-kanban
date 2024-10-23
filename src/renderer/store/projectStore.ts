@@ -4,23 +4,28 @@ import { getRandomPreparedColor, getUniqueId } from '../../shared/utils'
 import { arrayMove } from '@dnd-kit/sortable'
 
 export interface ProjectState extends Project {
+  setProject: (project: Project) => void
+  getProjectData: () => void
+  changeProjectColor: (color: string) => void
+  saveProject: () => void
+  resetProject: () => void
+
   addSection: () => void
   deleteSection: (sectionId: string) => void
   changeSectionName: (sectionId: string, newSectionName: string) => void
   changeSectionColor: (sectionId: string, newColor: string) => void
+  reorderSections: (newOrder: string[]) => void
+
   addTask: (task: Task, sectionId: string) => void
   deleteTask: (taskId: string, sectionId: string) => void
-  setProject: (project: Project) => void
   completeTask: (taskId: string, sectionId: string) => void
-  getProjectData: () => void
-  saveProject: () => void
-  resetProject: () => void
-  reorderSections: (newOrder: string[]) => void
+  progressTask: (taskId: string, sectionId: string) => void
   reorderTasks: (
     sectionId: string,
     activeTaskId: string,
     overTaskId: string
   ) => void
+
   moveTaskToSection: (
     task: Task,
     currentSection: string,
@@ -33,9 +38,16 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   name: '',
   sections: {},
   sectionOrder: [],
-
-  setProject: ({ id, name, sections, sectionOrder }: Project) => {
-    set((state) => ({ id, name, sections, sectionOrder }))
+  color: '',
+  setProject: ({ id, name, sections, sectionOrder, color }: Project) => {
+    set({ id, name, sections, sectionOrder, color })
+  },
+  getProjectData: () => {
+    const { id, name, sections, sectionOrder } = get()
+    return { id, name, sections, sectionOrder }
+  },
+  changeProjectColor: (color: string) => {
+    set({ color })
   },
   resetProject: () => {
     set({
@@ -43,15 +55,12 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       name: '',
       sections: {},
       sectionOrder: [],
+      color: '',
     })
   },
-  getProjectData: () => {
-    const { id, name, sections, sectionOrder } = get()
-    return { id, name, sections, sectionOrder }
-  },
   saveProject: () => {
-    const { id, name, sections, sectionOrder } = get()
-    window.electron.saveProject({ id, name, sections, sectionOrder })
+    const { id, name, sections, sectionOrder, color } = get()
+    window.electron.saveProject({ id, name, sections, sectionOrder, color })
   },
 
   addSection: () => {
@@ -103,6 +112,11 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       },
     }))
   },
+  reorderSections: (newOrder: string[]) => {
+    set(() => ({
+      sectionOrder: newOrder,
+    }))
+  },
 
   addTask: (task: Task, sectionId: string) => {
     set((state) => ({
@@ -122,7 +136,28 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         [sectionId]: {
           ...state.sections[sectionId],
           tasks: state.sections[sectionId].tasks.map((task) =>
-            task.id !== taskId ? task : { ...task, completed: true }
+            task.id !== taskId
+              ? task
+              : { ...task, completed: !task.completed, inProgress: false }
+          ),
+        },
+      },
+    }))
+  },
+  progressTask: (taskId: string, sectionId: string) => {
+    set((state) => ({
+      sections: {
+        ...state.sections,
+        [sectionId]: {
+          ...state.sections[sectionId],
+          tasks: state.sections[sectionId].tasks.map((task) =>
+            task.id !== taskId
+              ? task
+              : {
+                  ...task,
+                  inProgress: task.inProgress ? !task.inProgress : true,
+                  completed: false,
+                }
           ),
         },
       },
@@ -139,12 +174,6 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
           ),
         },
       },
-    }))
-  },
-
-  reorderSections: (newOrder: string[]) => {
-    set(() => ({
-      sectionOrder: newOrder,
     }))
   },
   reorderTasks: (
@@ -171,6 +200,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       }
     })
   },
+
   moveTaskToSection: (
     task: Task,
     currentSection: string,

@@ -27,7 +27,7 @@ const App = () => {
   }, [])
 
   return (
-    <div className='w-full h-full bg-neutral-800 text-black'>
+    <div className='w-full h-full bg-slate-950 font-manrope text-black'>
       <MainLayout />
     </div>
   )

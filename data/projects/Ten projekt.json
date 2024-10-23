@@ -1,0 +1,127 @@
+{
+  "id": "f796b5be-5f25-4286-a57b-1293f7eeced5",
+  "name": "Ten projekt",
+  "sections": {
+    "ad2f7d56-34b5-4848-821b-5d6c49a4c7c6": {
+      "name": "Interface",
+      "tasks": [
+        {
+          "id": "68d03a27-3709-4717-b1f5-6375b82c1bb7",
+          "title": "Wyświetlanie opisu tasków",
+          "description": "",
+          "completed": false,
+          "inProgress": true
+        },
+        {
+          "id": "d2281a7a-0ba8-4e5c-8c26-9dbd8833f751",
+          "title": "Scrollowanie przy dużej ilości tasków",
+          "description": "",
+          "completed": false,
+          "inProgress": true
+        },
+        {
+          "id": "51d7a45c-8cf2-4967-8c0b-c9781f4b775a",
+          "title": "Ułożenie kontentu w taskach",
+          "description": "",
+          "completed": true,
+          "inProgress": false
+        },
+        {
+          "id": "5d0fbf75-dcba-485d-b835-78652cd86c3b",
+          "title": "Resetowanie pól w formularzach",
+          "completed": true,
+          "inProgress": false
+        },
+        {
+          "id": "6f742bfb-b2e5-42a2-8f35-83fb03612442",
+          "title": "Przerobienie SideBar",
+          "completed": false,
+          "inProgress": false
+        },
+        {
+          "id": "5108bb8e-de89-42ba-8812-977956b96a5b",
+          "title": "Wystylowanie zmiany kolorów",
+          "description": "",
+          "completed": false,
+          "inProgress": false
+        }
+      ],
+      "color": "#f0ce00"
+    },
+    "7bbc1eda-9685-4bcc-af39-5eb4bf653da6": {
+      "name": "Do dodania",
+      "tasks": [
+        {
+          "id": "d41bf7a9-348b-4926-8ed5-273707bebbe0",
+          "title": "Wartość inProgress do każdego taska",
+          "completed": true,
+          "inProgress": false
+        },
+        {
+          "id": "cb99abf7-1b10-44b9-8e61-a22ec354c2f4",
+          "title": "Pole task description do każdego taska",
+          "completed": true,
+          "inProgress": false
+        }
+      ],
+      "color": "#37529d"
+    },
+    "1107f6b9-bc67-4992-ac5f-a91d7b1b1db1": {
+      "name": "Bugi",
+      "tasks": [
+        {
+          "id": "d5f9c1fc-d78d-42ff-8f5f-7301155f30d9",
+          "title": "Task po zmianie sekcji jest wrzucany na sam koniec zamiast na wskazaną pozycje",
+          "completed": false,
+          "inProgress": false
+        },
+        {
+          "id": "7f30ea41-80d5-4a1b-abf1-791935a967df",
+          "title": "Tworzenie się pustych projektów",
+          "completed": false,
+          "inProgress": false
+        },
+        {
+          "id": "148ffa68-7d13-4c2f-aa97-36449860f173",
+          "title": "Pusty komponent przy przesuwaniu taska",
+          "description": "",
+          "completed": true,
+          "inProgress": false
+        }
+      ],
+      "color": "#b077ff"
+    },
+    "db5d7a20-e4b3-4af0-9b6c-18bc5d089699": {
+      "name": "Kod",
+      "tasks": [
+        {
+          "id": "fec7683c-9917-4bc0-a82d-028d73b77455",
+          "title": "Ułożenie funkcji w projectStore i projectManager",
+          "completed": true,
+          "inProgress": false
+        }
+      ],
+      "color": "#00d751"
+    },
+    "c4032ac9-3958-4e31-a001-7bd8be7af1b2": {
+      "name": "Error handling",
+      "tasks": [
+        {
+          "id": "6ea73c9c-1bf2-4695-accb-24a405919ba3",
+          "title": "Nazwa projektu, sekcji lub taska musi mieć minimum 3 znaki",
+          "completed": false,
+          "inProgress": true
+        }
+      ],
+      "color": "#f0ce00"
+    }
+  },
+  "sectionOrder": [
+    "ad2f7d56-34b5-4848-821b-5d6c49a4c7c6",
+    "7bbc1eda-9685-4bcc-af39-5eb4bf653da6",
+    "db5d7a20-e4b3-4af0-9b6c-18bc5d089699",
+    "c4032ac9-3958-4e31-a001-7bd8be7af1b2",
+    "1107f6b9-bc67-4992-ac5f-a91d7b1b1db1"
+  ],
+  "color": "#7146ff"
+}

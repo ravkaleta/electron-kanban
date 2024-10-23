@@ -3,8 +3,10 @@ import TaskList from './TaskList'
 import { useProjectStore } from '../store/projectStore'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import SectionColorEdit from './SectionColorEdit'
+import { hexToRgb } from '../utils/colors'
+import { motion } from 'framer-motion'
 
 interface Props {
   sectionId: string
@@ -18,6 +20,8 @@ const Section = ({ sectionId }: Props) => {
   const sectionColor = useProjectStore(
     (state) => state.sections[sectionId].color
   )
+
+  const sectionColorRGB = hexToRgb(sectionColor)
 
   const deleteSection = useProjectStore((state) => state.deleteSection)
   const changeSectionName = useProjectStore((state) => state.changeSectionName)
@@ -46,7 +50,7 @@ const Section = ({ sectionId }: Props) => {
 
   const style = {
     transition,
-    transform: CSS.Transform.toString(transform),
+    transform: CSS.Translate.toString(transform),
     opacity: isDragging ? 0.5 : 1,
   }
 
@@ -54,13 +58,12 @@ const Section = ({ sectionId }: Props) => {
     <div
       style={style}
       ref={setNodeRef}
-      className='section-container min-w-64 w-64 h-full bg-neutral-900 ml-4 rounded-md shadow-black shadow-md border 
-                border-neutral-800'
+      className='min-w-72 w-72 ml-4 h-fit rounded-md bg-black/10 border border-slate-800 font-manrope'
     >
       <div
         {...attributes}
         {...listeners}
-        className='flex justify-between text-white font-bold pb-2 mb-2 border-b border-neutral-600 cursor-pointer rounded-t-md py-2 px-4'
+        className='flex justify-between text-white font-bold border-b border-neutral-600 cursor-pointer rounded-t-md py-2 px-4'
         style={{
           userSelect: 'none',
           backgroundColor: sectionColor,
@@ -87,7 +90,7 @@ const Section = ({ sectionId }: Props) => {
           X
         </button>
       </div>
-      <div className='flex-1 p-4'>
+      <div className='p-2'>
         {!editColor ? (
           <TaskList sectionId={sectionId} />
         ) : (

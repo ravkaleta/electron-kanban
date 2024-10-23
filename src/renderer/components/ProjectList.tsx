@@ -1,4 +1,6 @@
+import { List } from 'react-feather'
 import { useProjectStore } from '../store/projectStore'
+import NewProjectForm from './NewProjectForm'
 
 interface Props {
   existingProjects: string[]
@@ -26,11 +28,19 @@ const ProjectList = ({ existingProjects, setExistingProjects }: Props) => {
   }
 
   return (
-    <ul className='p-4'>
+    <ul className='w-full h-full bg-slate-900 rounded-lg p-4'>
+      <div className='w-full flex items-center justify-center gap-x-2 mb-4'>
+        <List size={24} />
+        <h2 className='text-center text-lg'>Your Projects</h2>
+      </div>
       {existingProjects.map((project) => (
         <li
           key={project}
-          className='text-neutral-300 hover:bg-gradient-to-tr hover:from-white/20 border-b border-neutral-600 py-1 px-2'
+          className={` ${
+            project === currentProjectName
+              ? 'bg-gradient-to-tr from-blue-500/20'
+              : ''
+          } text-white p-2 mt-1 first:mt-0 rounded-sm transition-all duration-300 border-b border-slate-800`}
         >
           <button
             onClick={() => handleProjectLoad(project)}

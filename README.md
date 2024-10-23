@@ -21,17 +21,20 @@ Project data is saved in JSON files with each change, ensuring that the applicat
 
 <h3 align="center">Full view</h4>
 <p align="center">
-    <img src="ss/full-view.jpg" width="90%" alt="Full app view">
+    <img src="ss/full-viewV2.jpg" width="90%" alt="Full app view">
+</p>
+<p align="center">
+    <img src="ss/full-viewV2-2.jpg" width="90%" alt="Full app view">
 </p>
 <h3 align="center">Drag and drop</h4>
 <p align="center">
-    <img src="ss/dnd-section.jpg" width="90%" alt="Changing section order">
+    <img src="ss/dnd-sectionV2.jpg" width="90%" alt="Changing section order">
 </p>
 <p align="center">
-    <img src="ss/dnd-task.jpg" width="90%" alt="Changing task order">
+    <img src="ss/dnd-taskV2.jpg" width="90%" alt="Changing task order">
 </p>
 <h3 align="center">Color changing</h4>
 <p align="center">
-    <img src="ss/section-color.jpg" width="40%" alt="Color change via palette">
-    <img src="ss/section-color-picker.jpg" width="40%" alt="Color change via picker">
+    <img src="ss/section-colorV2.jpg" width="40%" alt="Color change via palette">
+    <img src="ss/section-color-pickerV2.jpg" width="40%" alt="Color change via picker">
 </p>

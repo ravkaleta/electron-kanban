@@ -51,5 +51,5 @@ export const readyColors = [
   '#ff55a6',
 
   '#ff4d61',
-  '#ff4d61',
+  '#ff3950',
 ]

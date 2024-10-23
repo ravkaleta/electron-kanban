@@ -10,6 +10,7 @@ interface Props {
 
 const TaskList = ({ sectionId }: Props) => {
   const completeTask = useProjectStore((state) => state.completeTask)
+  const progressTask = useProjectStore((state) => state.progressTask)
   const deleteTask = useProjectStore((state) => state.deleteTask)
   const tasks = useProjectStore((state) => state.sections[sectionId].tasks)
 
@@ -17,6 +18,10 @@ const TaskList = ({ sectionId }: Props) => {
 
   const handleTaskComplete = (taskId: string) => {
     completeTask(taskId, sectionId)
+  }
+
+  const handleTaskProgress = (taskId: string) => {
+    progressTask(taskId, sectionId)
   }
 
   const handleTaskDelete = (taskId: string) => {
@@ -33,6 +38,7 @@ const TaskList = ({ sectionId }: Props) => {
             sectionId={sectionId}
             handleTaskComplete={handleTaskComplete}
             handleTaskDelete={handleTaskDelete}
+            handleTaskProgress={handleTaskProgress}
           />
         ))}
       </SortableContext>

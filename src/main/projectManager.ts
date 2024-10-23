@@ -24,14 +24,17 @@ export const createProject = async (name: string): Promise<Project> => {
         tasks: [
           {
             id: getUniqueId(),
-            content: 'First task',
+            title: 'First task',
+            description: 'Description for first task',
             completed: false,
+            inProgress: false,
           },
         ],
         color: getRandomPreparedColor(),
       },
     },
     sectionOrder: [firstSectionId],
+    color: getRandomPreparedColor(),
   }
   const filePath = path.join(projectsPath, `${name}.json`)
 
@@ -58,7 +61,6 @@ export const createProject = async (name: string): Promise<Project> => {
 
 export const loadProject = async (name: string): Promise<Project | null> => {
   const filePath = path.join(projectsPath, `${name}.json`)
-  console.log('PROJECT LOADING')
   try {
     const project = await fs.promises.readFile(filePath, 'utf-8')
     const projectJSON = JSON.parse(project) as Project

@@ -3,9 +3,9 @@ import { componentToHex } from './utils'
 export const hexToRgb = (hex: string) => {
   hex = hex.replace(/^#/, '')
 
-  const r = parseInt(hex.substring(0, 2), 16) / 255
-  const g = parseInt(hex.substring(2, 4), 16) / 255
-  const b = parseInt(hex.substring(4, 6), 16) / 255
+  const r = parseInt(hex.substring(0, 2), 16)
+  const g = parseInt(hex.substring(2, 4), 16)
+  const b = parseInt(hex.substring(4, 6), 16)
 
   return { r, g, b }
 }
@@ -35,26 +35,29 @@ export const hsvToRgb = (h: number, s: number, v: number) => {
 export const hexToHsv = (hex: string) => {
   const { r, g, b } = hexToRgb(hex)
 
-  const max = Math.max(r, g, b)
-  const min = Math.min(r, g, b)
+  const rNorm = r / 255
+  const gNorm = g / 255
+  const bNorm = b / 255
+
+  const max = Math.max(rNorm, gNorm, bNorm)
+  const min = Math.min(rNorm, gNorm, bNorm)
   const delta = max - min
 
   let h = 0
   if (delta !== 0) {
-    if (max === r) {
-      h = ((g - b) / delta) % 6
-    } else if (max === g) {
-      h = (b - r) / delta + 2
+    if (max === rNorm) {
+      h = ((gNorm - bNorm) / delta) % 6
+    } else if (max === gNorm) {
+      h = (bNorm - rNorm) / delta + 2
     } else {
-      h = (r - g) / delta + 4
+      h = (rNorm - gNorm) / delta + 4
     }
     h = Math.round(h * 60)
     if (h < 0) h += 360
   }
 
   const s = max === 0 ? 0 : delta / max
-
-  const v = max
+  const v = max // v jest w przedziale 0-1 i tutaj jest poprawnie
 
   return { h, s: +(s * 100).toFixed(1), v: +(v * 100).toFixed(1) }
 }

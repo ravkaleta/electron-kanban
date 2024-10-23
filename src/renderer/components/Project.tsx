@@ -14,25 +14,33 @@ import { arrayMove, SortableContext } from '@dnd-kit/sortable'
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Task as ITask } from '../../shared/types'
-import TaskOverlay from './TaskOverlay'
+import SectionList from './SectionList'
+import Task from './Task'
 
 const Project = () => {
   const [activeSection, setActiveSection] = useState<UniqueIdentifier | null>(
     null
   )
-  const [activeTask, setActiveTask] = useState<ITask | null>(null)
+  const [activeTask, setActiveTask] = useState<{
+    task: ITask
+    sectionId: string
+  } | null>(null)
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
   )
 
+  const projectId = useProjectStore((state) => state.id)
   const sectionsInOrder = useProjectStore((state) => state.sectionOrder)
-  const addSection = useProjectStore((state) => state.addSection)
   const reorderSections = useProjectStore((state) => state.reorderSections)
   const reorderTasks = useProjectStore((state) => state.reorderTasks)
   const moveTaskToSection = useProjectStore((state) => state.moveTaskToSection)
 
-  const handleNewSection = () => {
-    addSection()
+  if (!projectId) {
+    return (
+      <div className='flex-1 flex justify-center items-center text-white'>
+        Create your first project
+      </div>
+    )
   }
 
   const onDragStart = (event: DragStartEvent) => {
@@ -41,20 +49,24 @@ const Project = () => {
     }
 
     if (event.active.data.current?.type === 'Task') {
-      setActiveTask(event.active.data.current.task as ITask)
+      setActiveTask({
+        task: event.active.data.current.task as ITask,
+        sectionId: event.active.data.current.sectionId as string,
+      })
     }
   }
 
   const onDragEnd = (event: DragOverEvent) => {
     const { active, over } = event
 
-    if (!activeSection) return
-    setActiveSection(null)
-    if (!over) return
     if (activeTask) {
       setActiveTask(null)
       return
     }
+    if (!activeSection) return
+    setActiveSection(null)
+    if (!over) return
+
     if (activeSection === over.id) return
 
     const activeSectionIndex = sectionsInOrder.findIndex(
@@ -64,7 +76,6 @@ const Project = () => {
     const overSectionIndex = sectionsInOrder.findIndex(
       (s) => s === over.id.toString()
     )
-
     reorderSections(
       arrayMove(sectionsInOrder, activeSectionIndex, overSectionIndex)
     )
@@ -72,7 +83,6 @@ const Project = () => {
 
   const onDragOver = (event: DragOverEvent) => {
     const { active, over } = event
-
     if (!activeTask) return
     if (!over) return
 
@@ -112,7 +122,7 @@ const Project = () => {
   }
 
   return (
-    <div className='flex w-full h-full py-4 overflow-y-clip overflow-x-scroll'>
+    <div className='w-full h-full z-10'>
       <DndContext
         sensors={sensors}
         onDragStart={onDragStart}
@@ -120,27 +130,19 @@ const Project = () => {
         onDragOver={onDragOver}
       >
         <SortableContext items={sectionsInOrder}>
-          {sectionsInOrder.map((sectionId) => (
-            <Section sectionId={sectionId} key={sectionId} />
-          ))}
+          <SectionList sectionsInOrder={sectionsInOrder} />
         </SortableContext>
 
         {createPortal(
           <DragOverlay>
             {activeSection && <Section sectionId={activeSection.toString()} />}
-            {activeTask && <TaskOverlay task={activeTask} />}
+            {activeTask && (
+              <Task task={activeTask.task} sectionId={activeTask.sectionId} />
+            )}
           </DragOverlay>,
           document.body
         )}
       </DndContext>
-      <div className='flex items-center justify-center min-w-64 w-64 h-full'>
-        <button
-          onClick={handleNewSection}
-          className='w-24 h-24 bg-neutral-700 border border-neutral-600 rounded-xl shadow-black shadow-sm'
-        >
-          +
-        </button>
-      </div>
     </div>
   )
 }
