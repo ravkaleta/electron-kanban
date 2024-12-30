@@ -1,10 +1,12 @@
-import { useProjectStore } from '../store/projectStore'
-import Section from './Section'
+import { useProjectStore } from '../../store/projectStore'
+import Section from '../Section/Section'
 import {
   DndContext,
+  DragEndEvent,
   DragOverEvent,
   DragOverlay,
   DragStartEvent,
+  MouseSensor,
   PointerSensor,
   UniqueIdentifier,
   useSensor,
@@ -13,9 +15,9 @@ import {
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Task as ITask } from '../../shared/types'
-import SectionList from './SectionList'
-import Task from './Task'
+import { Task as ITask } from '../../../shared/types'
+import SectionList from '../Section/SectionList'
+import Task from '../Task/Task'
 
 const Project = () => {
   const [activeSection, setActiveSection] = useState<UniqueIdentifier | null>(
@@ -34,6 +36,11 @@ const Project = () => {
   const reorderSections = useProjectStore((state) => state.reorderSections)
   const reorderTasks = useProjectStore((state) => state.reorderTasks)
   const moveTaskToSection = useProjectStore((state) => state.moveTaskToSection)
+  const saveProject = useProjectStore((state) => state.saveProject)
+
+  const setDraggingSection = useProjectStore(
+    (state) => state.setDraggingSection
+  )
 
   if (!projectId) {
     return (
@@ -46,6 +53,7 @@ const Project = () => {
   const onDragStart = (event: DragStartEvent) => {
     if (event.active.data.current?.type === 'Section') {
       setActiveSection(event.active.id)
+      setDraggingSection(true)
     }
 
     if (event.active.data.current?.type === 'Task') {
@@ -56,68 +64,74 @@ const Project = () => {
     }
   }
 
-  const onDragEnd = (event: DragOverEvent) => {
-    const { active, over } = event
-
+  const onDragEnd = (event: DragEndEvent) => {
+    const { over } = event
     if (activeTask) {
+      saveProject()
       setActiveTask(null)
       return
     }
-    if (!activeSection) return
-    setActiveSection(null)
     if (!over) return
 
-    if (activeSection === over.id) return
+    if (activeSection) {
+      const activeSectionId = activeSection
+      setActiveSection(null)
+      setDraggingSection(false)
 
-    const activeSectionIndex = sectionsInOrder.findIndex(
-      (s) => s === active.id.toString()
-    )
+      if (activeSection === over.id) return
 
-    const overSectionIndex = sectionsInOrder.findIndex(
-      (s) => s === over.id.toString()
-    )
-    reorderSections(
-      arrayMove(sectionsInOrder, activeSectionIndex, overSectionIndex)
-    )
+      const activeSectionIndex = sectionsInOrder.findIndex(
+        (s) => s === activeSectionId.toString()
+      )
+      const overSectionIndex = sectionsInOrder.findIndex(
+        (s) => s === over.id.toString()
+      )
+      reorderSections(
+        arrayMove(sectionsInOrder, activeSectionIndex, overSectionIndex)
+      )
+
+      saveProject()
+    }
   }
 
   const onDragOver = (event: DragOverEvent) => {
-    const { active, over } = event
-    if (!activeTask) return
-    if (!over) return
-
-    const activeId = active.id
-    const overId = over.id
-
-    if (activeId === overId) return
-
+    const { over } = event
+    console.log(over)
+    if (!activeTask || !over || activeTask.task.id === over.id) return
     const isOverTask = over.data.current?.type === 'Task'
     const isOverSection = over.data.current?.type === 'Section'
 
     if (isOverTask) {
-      console.log('ACTIVE', active.data.current.sectionId)
-      console.log('Over', over.data.current.sectionId)
-      if (active.data.current.sectionId !== over.data.current.sectionId) {
+      if (activeTask.sectionId !== over.data.current.sectionId) {
         moveTaskToSection(
-          active.data.current.task,
-          active.data.current.sectionId,
-          over.data.current.sectionId
+          activeTask.task,
+          activeTask.sectionId,
+          over.data.current.sectionId,
+          over.data.current.task.id
         )
+        setActiveTask((prev) => ({
+          ...prev,
+          sectionId: over.data.current.sectionId,
+        }))
       } else {
         reorderTasks(
           over.data.current?.sectionId,
-          activeId.toString(),
-          overId.toString()
+          activeTask.task.id.toString(),
+          over.data.current.task.id.toString()
         )
       }
-    } else if (isOverSection) {
-      if (active.data.current.sectionId !== over.id) {
-        moveTaskToSection(
-          active.data.current.task,
-          active.data.current.sectionId,
-          over.id.toString()
-        )
-      }
+    }
+
+    if (isOverSection && activeTask.sectionId !== over.id) {
+      moveTaskToSection(
+        activeTask.task,
+        activeTask.sectionId,
+        over.id.toString()
+      )
+      setActiveTask((prev) => ({
+        ...prev,
+        sectionId: over.id.toString(),
+      }))
     }
   }
 
@@ -137,7 +151,11 @@ const Project = () => {
           <DragOverlay>
             {activeSection && <Section sectionId={activeSection.toString()} />}
             {activeTask && (
-              <Task task={activeTask.task} sectionId={activeTask.sectionId} />
+              <Task
+                task={activeTask.task}
+                sectionId={activeTask.sectionId}
+                isOverlay={true}
+              />
             )}
           </DragOverlay>,
           document.body

@@ -39,7 +39,7 @@ const ColorPicker = ({ handleColorChange, color }: Props) => {
   }
 
   return (
-    <div className='flex flex-col items-center justify-center'>
+    <div className='flex flex-col items-center justify-center gap-y-2'>
       <SaturationPicker
         hue={hue}
         saturation={saturation}

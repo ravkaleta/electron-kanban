@@ -1,5 +1,6 @@
 import React, { MouseEvent, useEffect, useState } from 'react'
 import { hsvToRgb } from '../../../renderer/utils/colors'
+import { useProjectStore } from '../../store/projectStore'
 
 interface props {
   hue: number
@@ -10,16 +11,34 @@ interface props {
 
 const SaturationPicker = ({ hue, saturation, value, onChange }: props) => {
   const [isMouseDown, setMouseDown] = useState(false)
-  const [coords, setCoords] = useState({ x: 0, y: 0 })
+  const [coords, setCoords] = useState(null)
   const { r, g, b } = hsvToRgb(hue, saturation, value)
+
+  const saveProject = useProjectStore((state) => state.saveProject)
 
   const getSatCoords = () => {
     setCoords({ x: saturation, y: 100 - value })
   }
 
+  const handleMouseUp = () => {
+    saveProject()
+    setMouseDown(false)
+  }
+
+  const handleMouseLeave = () => {
+    if (isMouseDown === true) {
+      saveProject()
+      setMouseDown(false)
+    }
+  }
+
   useEffect(() => {
     getSatCoords()
   }, [saturation, value])
+
+  if (!coords) {
+    return
+  }
 
   return (
     <div
@@ -35,8 +54,8 @@ const SaturationPicker = ({ hue, saturation, value, onChange }: props) => {
           onChange(event)
         }
       }}
-      onMouseUp={() => setMouseDown(false)}
-      onMouseLeave={() => setMouseDown(false)}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
     >
       <div
         className='absolute -translate-x-4 -translate-y-4 w-8 h-8 rounded-full bg-transparent border border-white'

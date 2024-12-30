@@ -1,4 +1,4 @@
-import { readyColors } from '../../shared/constants'
+import { readyColors } from '../../../shared/constants'
 
 interface Props {
   handleColorChange: (newColor: string) => void
@@ -6,19 +6,15 @@ interface Props {
 
 const ColorPalette = ({ handleColorChange }: Props) => {
   return (
-    <div className=''>
+    <div className='flex flex-wrap items-center justify-center gap-1'>
       {readyColors.map((c) => (
         <button
           key={c}
           onClick={() => handleColorChange(c)}
           style={{ backgroundColor: c }}
-          className='w-6 h-6'
+          className='w-6 h-6 rounded-sm'
         />
       ))}
-      <button
-        className='w-6 h-6 bg-neutral-600'
-        onClick={() => handleColorChange('#525252')}
-      />
     </div>
   )
 }

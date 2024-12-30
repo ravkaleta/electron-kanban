@@ -1,8 +1,9 @@
-import { useProjectStore } from '../store/projectStore'
-import NewTaskForm from './NewTaskForm'
+import { useProjectStore } from '../../store/projectStore'
+import TaskForm from './TaskForm'
 import Task from './Task'
 import { SortableContext } from '@dnd-kit/sortable'
 import { useMemo } from 'react'
+import { PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 
 interface Props {
   sectionId: string
@@ -13,6 +14,10 @@ const TaskList = ({ sectionId }: Props) => {
   const progressTask = useProjectStore((state) => state.progressTask)
   const deleteTask = useProjectStore((state) => state.deleteTask)
   const tasks = useProjectStore((state) => state.sections[sectionId].tasks)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
+  )
 
   const tasksId = useMemo(() => tasks.map((t) => t.id), [tasks])
 
@@ -29,7 +34,7 @@ const TaskList = ({ sectionId }: Props) => {
   }
 
   return (
-    <div className='text-white'>
+    <div className='text-white max-h-[calc(100vh-12rem)] overflow-y-auto'>
       <SortableContext items={tasksId}>
         {tasks.map((task) => (
           <Task
@@ -42,7 +47,7 @@ const TaskList = ({ sectionId }: Props) => {
           />
         ))}
       </SortableContext>
-      <NewTaskForm sectionId={sectionId} />
+      <TaskForm sectionId={sectionId} />
     </div>
   )
 }

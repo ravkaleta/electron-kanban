@@ -1,0 +1,23 @@
+{
+  "id": "adc93c3f-4eaf-4263-a923-6097bac1c9a7",
+  "name": "fdasfasdfsda",
+  "sections": {
+    "bab4d04c-b73b-41f4-bf6e-9cf678114ec7": {
+      "name": "To do",
+      "tasks": [
+        {
+          "id": "e9bcc71d-c345-4f07-b347-a7ba16e4465b",
+          "title": "First task",
+          "description": "Description for first task",
+          "completed": false,
+          "inProgress": false
+        }
+      ],
+      "color": "#4bb2ff"
+    }
+  },
+  "sectionOrder": [
+    "bab4d04c-b73b-41f4-bf6e-9cf678114ec7"
+  ],
+  "color": "#c0ff00"
+}

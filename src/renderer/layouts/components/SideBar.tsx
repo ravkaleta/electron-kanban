@@ -1,6 +1,6 @@
 import { MutableRefObject, useEffect, useState } from 'react'
-import NewProjectForm from '../../components/NewProjectForm'
-import ProjectList from '../../components/ProjectList'
+import NewProjectForm from '../../components/Project/NewProjectForm'
+import ProjectList from '../../components/Project/ProjectList'
 import ToggleButton from './ToggleButton'
 import { motion } from 'framer-motion'
 
@@ -45,9 +45,6 @@ const SideBar = ({ mainContentRef }: Props) => {
           isOpen={sideBarOpen}
           setOpen={() => setSideBarOpen((prev) => !prev)}
         />
-        {sideBarOpen && (
-          <h1 className='text-blue-500 font-extrabold text-xl'>LOGO APKI</h1>
-        )}
       </div>
 
       <motion.div
@@ -66,12 +63,22 @@ const SideBar = ({ mainContentRef }: Props) => {
             existingProjects={existingProjects}
             setExistingProjects={setExistingProjects}
           />
+          <div className='mx-auto w-48 bg-gradient-to-tr from-blue-400 to-blue-700 p-[1px] rounded-md shadow-black shadow-md'>
+            <button
+              onClick={() => setProjectFormOpen((prev) => !prev)}
+              className='w-full bg-slate-900 text-blue-100 rounded-md p-2'
+            >
+              Create New Project
+            </button>
+          </div>
         </motion.div>
-        <NewProjectForm
-          setExistingProjects={setExistingProjects}
-          isFormOpen={isProjectFormOpen}
-          setFormOpen={setProjectFormOpen}
-        />
+        {isProjectFormOpen && (
+          <NewProjectForm
+            setExistingProjects={setExistingProjects}
+            isFormOpen={isProjectFormOpen}
+            setFormOpen={setProjectFormOpen}
+          />
+        )}
       </motion.div>
     </motion.div>
   )

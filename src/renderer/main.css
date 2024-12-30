@@ -3,15 +3,11 @@
 @tailwind utilities;
 
 html,
-body {
-  width: 100%;
-  height: 100%;
-}
-
+body,
 #root {
   width: 100%;
   height: 100%;
-  background-color: red;
+  background-color: transparent;
 }
 
 @font-face {
@@ -22,7 +18,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
   height: 8px;
 }
 
@@ -40,4 +36,12 @@ body {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.drag {
+  -webkit-app-region: drag;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
 }

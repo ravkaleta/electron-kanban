@@ -5,6 +5,10 @@ import { contextBridge, ipcRenderer } from 'electron'
 import { Project } from '../shared/types'
 
 contextBridge.exposeInMainWorld('electron', {
+  minimizeApp: () => ipcRenderer.send('minimize-app'),
+  maximizeApp: () => ipcRenderer.send('maximize-app'),
+  closeApp: () => ipcRenderer.send('close-app'),
+
   createProject: (name: string) => ipcRenderer.invoke('create-project', name),
   loadProject: (name: string) => ipcRenderer.invoke('load-project', name),
   saveProject: (project: Project) => ipcRenderer.send('save-project', project),

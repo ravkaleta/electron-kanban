@@ -1,15 +1,16 @@
-import { useEffect } from 'react'
+import { RefObject, useEffect } from 'react'
 
 const useAutosizeTextArea = (
-  textAreaRef: HTMLTextAreaElement,
+  textAreaRef: RefObject<HTMLTextAreaElement>,
   value: string
 ) => {
   useEffect(() => {
-    if (textAreaRef) {
-      textAreaRef.style.height = '0px'
-      const scrollHeight = textAreaRef.scrollHeight
-
-      textAreaRef.style.height = Math.min(scrollHeight, 96) + 'px'
+    const textArea = textAreaRef.current
+    if (textArea) {
+      requestAnimationFrame(() => {
+        textArea.style.height = '0px'
+        textArea.style.height = `${Math.min(textArea.scrollHeight, 80)}px`
+      })
     }
   }, [textAreaRef, value])
 }

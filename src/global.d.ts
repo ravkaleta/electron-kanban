@@ -1,4 +1,8 @@
 export interface ElectronApi {
+  minimizeApp: () => void
+  maximizeApp: () => void
+  closeApp: () => void
+
   createProject: (name: string) => Promise<any>
   loadProject: (name: string) => Promise<any>
   saveProject: (project: Project) => void

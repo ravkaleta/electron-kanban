@@ -17,6 +17,7 @@ export interface ProjectState extends Project {
   reorderSections: (newOrder: string[]) => void
 
   addTask: (task: Task, sectionId: string) => void
+  editTask: (sectionId: string, editedTask: Task) => void
   deleteTask: (taskId: string, sectionId: string) => void
   completeTask: (taskId: string, sectionId: string) => void
   progressTask: (taskId: string, sectionId: string) => void
@@ -29,8 +30,12 @@ export interface ProjectState extends Project {
   moveTaskToSection: (
     task: Task,
     currentSection: string,
-    newSection: string
+    newSection: string,
+    overTaskId?: string
   ) => void
+
+  isDraggingSection: boolean
+  setDraggingSection: (bool: boolean) => void
 }
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
@@ -39,6 +44,12 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   sections: {},
   sectionOrder: [],
   color: '',
+
+  isDraggingSection: false,
+  setDraggingSection: (bool) => {
+    set({ isDraggingSection: bool })
+  },
+
   setProject: ({ id, name, sections, sectionOrder, color }: Project) => {
     set({ id, name, sections, sectionOrder, color })
   },
@@ -76,6 +87,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       },
       sectionOrder: state.sectionOrder.concat(sectionId),
     }))
+    get().saveProject()
   },
   deleteSection: (sectionIdToDelete: string) => {
     set((state) => {
@@ -89,6 +101,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         ),
       }
     })
+    get().saveProject()
   },
   changeSectionName: (sectionId: string, newSectionName: string) => {
     set((state) => ({
@@ -100,6 +113,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         },
       },
     }))
+    get().saveProject()
   },
   changeSectionColor: (sectionId: string, newColor: string) => {
     set((state) => ({
@@ -128,6 +142,21 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         },
       },
     }))
+    get().saveProject()
+  },
+  editTask: (sectionId: string, editedTask: Task) => {
+    set((state) => ({
+      sections: {
+        ...state.sections,
+        [sectionId]: {
+          ...state.sections[sectionId],
+          tasks: state.sections[sectionId].tasks.map((task) =>
+            task.id !== editedTask.id ? task : editedTask
+          ),
+        },
+      },
+    }))
+    get().saveProject()
   },
   completeTask: (taskId: string, sectionId: string) => {
     set((state) => ({
@@ -143,6 +172,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         },
       },
     }))
+    get().saveProject()
   },
   progressTask: (taskId: string, sectionId: string) => {
     set((state) => ({
@@ -162,6 +192,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         },
       },
     }))
+    get().saveProject()
   },
   deleteTask: (taskId: string, sectionId: string) => {
     set((state) => ({
@@ -175,6 +206,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         },
       },
     }))
+    get().saveProject()
   },
   reorderTasks: (
     sectionId: string,
@@ -204,9 +236,20 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   moveTaskToSection: (
     task: Task,
     currentSection: string,
-    newSection: string
+    newSection: string,
+    overTaskId: string
   ) => {
     set((state) => {
+      let newTaskList = state.sections[newSection].tasks.concat(task)
+      if (overTaskId) {
+        const overTaskIndex = newTaskList.findIndex((t) => t.id === overTaskId)
+        newTaskList = arrayMove(
+          newTaskList,
+          newTaskList.length - 1,
+          overTaskIndex
+        )
+      }
+
       return {
         sections: {
           ...state.sections,
@@ -218,7 +261,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
           },
           [newSection]: {
             ...state.sections[newSection],
-            tasks: state.sections[newSection].tasks.concat(task),
+            tasks: newTaskList,
           },
         },
       }

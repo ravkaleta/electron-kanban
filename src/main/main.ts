@@ -34,12 +34,16 @@ const createWindow = () => {
     height: config.windowState.height,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      devTools: false,
     },
+    frame: false,
+    transparent: true,
   })
 
   mainWindow.on('resized', () => {
     const windowSize = mainWindow.getSize()
     saveWindowSize(windowSize[0], windowSize[1])
+    saveWindowMaximize(false)
   })
 
   mainWindow.on('moved', () => {
@@ -68,11 +72,25 @@ const createWindow = () => {
     mainWindow.maximize()
   }
 
+  mainWindow.removeMenu()
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
 
   // mainWindow.removeMenu
 }
+
+ipcMain.on('close-app', () => {
+  console.log('CLOSE')
+  app.quit()
+})
+
+ipcMain.on('minimize-app', () => {
+  BrowserWindow.getFocusedWindow().minimize()
+})
+
+ipcMain.on('maximize-app', () => {
+  BrowserWindow.getFocusedWindow().maximize()
+})
 
 ipcMain.handle('create-project', async (event, name: string) => {
   try {

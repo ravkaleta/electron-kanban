@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs'
+import { app } from 'electron'
 
 interface WindowState {
   height: number
@@ -24,11 +25,12 @@ let config: Config = {
   recentProjectName: null,
 }
 
-const configPath = path.join(__dirname, '../../config/config.json')
+const configPath = path.join(app.getPath('userData'), '/config')
+const configFilePath = path.join(configPath, `config.json`)
 
 export const loadConfig = () => {
   try {
-    const data = fs.readFileSync(configPath, 'utf-8')
+    const data = fs.readFileSync(configFilePath, 'utf-8')
     const dataJSON = JSON.parse(data)
     config = dataJSON as Config
     return config
@@ -43,8 +45,12 @@ export const getConfig = () => {
 }
 
 export const saveConfig = () => {
+  if (!fs.existsSync(configPath)) {
+    fs.mkdirSync(configPath, { recursive: true })
+  }
+
   try {
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
+    fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2))
   } catch (error) {
     console.error('Error saving config: ', error)
   }

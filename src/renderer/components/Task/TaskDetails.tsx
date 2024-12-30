@@ -1,53 +1,36 @@
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import { Task } from '../../shared/types'
+import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
 import { Clock, Settings, Trash } from 'react-feather'
-import { useRef, useState } from 'react'
-import useClickOutside from '../hooks/useClickOutside'
+import { Task } from '../../../shared/types'
+import ArrowDownIcon from '../../assets/icons/arrowDownIcon.svg'
+import ArrowUpIcon from '../../assets/icons/arrowUpIcon.svg'
+import useClickOutside from '../../hooks/useClickOutside'
 
 interface Props {
   task: Task
-  sectionId: string
   handleTaskDelete?: (taskId: string) => void
   handleTaskComplete?: (taskId: string) => void
   handleTaskProgress?: (taskId: string) => void
+  setEditMode: Dispatch<SetStateAction<boolean>>
+  isOverlay: boolean
 }
 
-const Task = ({
+const TaskDetails = ({
   task,
-  sectionId,
   handleTaskComplete,
   handleTaskProgress,
   handleTaskDelete,
+  setEditMode,
+  isOverlay,
 }: Props) => {
-  const [optionsVisible, setOptionsVisible] = useState(false)
-  const [editMode, setEditMode] = useState(false)
-  const optionsRef = useRef<HTMLDivElement>(null)
+  const [isDescriptionVisible, setDescriptionVisibility] = useState(false)
+  const taskRef = useRef(null)
 
-  const {
-    setNodeRef,
-    attributes,
-    listeners,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: task.id, data: { type: 'Task', task, sectionId } })
-
-  useClickOutside(() => setOptionsVisible(false), optionsRef)
-
-  const style = {
-    transition: `${transition}, background-image 0.3s ease `,
-    transform: CSS.Translate.toString(transform),
-    opacity: isDragging ? 0.5 : 1,
-  }
+  useClickOutside(() => setDescriptionVisibility(false), taskRef)
 
   return (
     <div
-      style={style}
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      className='relative group text-white rounded-md p-2 mb-2 bg-slate-800 font-manrope'
+      ref={taskRef}
+      className='relative group text-white rounded-md p-2 bg-slate-800 font-manrope'
     >
       <div
         className={`absolute inset-0 bg-gradient-to-tr from-emerald-800 transition-opacity pointer-events-none rounded-md ${
@@ -55,11 +38,13 @@ const Task = ({
         }`}
       />
       {task.inProgress && (
-        <div className='absolute inset-0 bg-gradient-to-r from-transparent via-amber-600/30 to-transparent animate-gradient bg-[length:200%_auto]' />
+        <div className='absolute inset-0 bg-gradient-to-r from-transparent via-amber-600/30 to-transparent animate-gradient rounded-md bg-[length:200%_auto]' />
       )}
       <div className='relative z-10'>
         <div
-          className={`flex items-center pb-2 border-b ${
+          className={`flex items-center ${
+            task.description ? 'border-b pb-2' : ''
+          } min-h-20 ${
             task.completed
               ? 'border-emerald-600/30'
               : task.inProgress
@@ -67,8 +52,8 @@ const Task = ({
               : 'border-slate-700'
           }`}
         >
-          <h1 className='pl-2 font-bold w-4/5'>{task.title}</h1>
-          {handleTaskComplete && handleTaskDelete && handleTaskProgress && (
+          <h1 className='pl-2 font-bold w-4/5 overflow-hidden'>{task.title}</h1>
+          {!isOverlay && (
             <div className='w-1/5 grid grid-cols-2 opacity-10 group-hover:opacity-100 text-slate-400 transition-opacity'>
               <button
                 onClick={() => handleTaskComplete(task.id)}
@@ -97,11 +82,31 @@ const Task = ({
             </div>
           )}
         </div>
-
-        <p className='text-sm mt-2'>{task.description}</p>
+        {task.description ? (
+          !isDescriptionVisible ? (
+            <button
+              onClick={() => setDescriptionVisibility((prev) => !prev)}
+              className='block mx-auto'
+            >
+              <img src={ArrowDownIcon} />
+            </button>
+          ) : (
+            <>
+              <p className='text-sm mt-2 pl-2'>{task.description}</p>
+              <button
+                onClick={() => setDescriptionVisibility((prev) => !prev)}
+                className='block mx-auto'
+              >
+                <img src={ArrowUpIcon} />
+              </button>
+            </>
+          )
+        ) : (
+          ''
+        )}
       </div>
     </div>
   )
 }
 
-export default Task
+export default TaskDetails

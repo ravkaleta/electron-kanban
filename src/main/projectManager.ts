@@ -3,13 +3,19 @@ import fs from 'fs'
 import { getRandomPreparedColor, getUniqueId } from '../shared/utils'
 import { Project } from '../shared/types'
 import { saveRecentProjectName } from './config'
+import { app } from 'electron'
 
-const projectsPath = path.join(__dirname, '../../data/projects')
+const projectsPath = path.join(app.getPath('userData'), '/projects')
 
 export const getAllProjects = async (): Promise<string[]> => {
-  const projects = await fs.promises.readdir(projectsPath)
-  const projectsNames = projects.map((project) => project.replace('.json', ''))
-  return projectsNames
+  if (fs.existsSync(projectsPath)) {
+    const projects = await fs.promises.readdir(projectsPath)
+    const projectsNames = projects.map((project) =>
+      project.replace('.json', '')
+    )
+    return projectsNames
+  }
+  return []
 }
 
 export const createProject = async (name: string): Promise<Project> => {
@@ -36,6 +42,11 @@ export const createProject = async (name: string): Promise<Project> => {
     sectionOrder: [firstSectionId],
     color: getRandomPreparedColor(),
   }
+
+  if (!fs.existsSync(projectsPath)) {
+    fs.mkdirSync(projectsPath, { recursive: true })
+  }
+
   const filePath = path.join(projectsPath, `${name}.json`)
 
   try {

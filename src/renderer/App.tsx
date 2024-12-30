@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
 import { useProjectStore } from './store/projectStore'
 import MainLayout from './layouts/MainLayout'
+import Navbar from './layouts/Navbar'
 
 const App = () => {
   const setProject = useProjectStore((state) => state.setProject)
-  const saveProject = useProjectStore((state) => state.saveProject)
+  // const saveProject = useProjectStore((state) => state.saveProject)
 
   useEffect(() => {
     const fetchRecentProject = async () => {
@@ -17,17 +18,12 @@ const App = () => {
       }
     }
 
-    const projectSubscription = useProjectStore.subscribe(() => saveProject())
-
     fetchRecentProject()
-
-    return () => {
-      projectSubscription()
-    }
   }, [])
 
   return (
-    <div className='w-full h-full bg-slate-950 font-manrope text-black'>
+    <div className='w-full h-full bg-slate-950 font-manrope text-black rounded-t-xl'>
+      <Navbar />
       <MainLayout />
     </div>
   )
